@@ -3,29 +3,16 @@ import matplotlib.pyplot as plt
 import numpy as np
 import spacy
 import spacy.symbols
-
-# cluster detection
-import sklearn
-import sklearn.feature_extraction.text
-import sklearn.pipeline
-import sklearn.preprocessing
-import sklearn.datasets
-import sklearn.cluster
-import sklearn.decomposition
-import sklearn.metrics
-
-import matplotlib.pyplot as plt #For graphics
-import matplotlib.cm #Still for graphics
-import seaborn as sns #Makes the graphics look nicer
+import re
 
 # load spacy model
 nlp = spacy.load('en_core_web_sm')
 
-def preprocess(input=''):
+def preprocess(input='', output=''):
     '''
     Preprocess csv file of Reddit data
 
-    -input: name of input csv file
+    -input: name of input txt file
     -output: name of output csv file
     '''
 
@@ -51,10 +38,10 @@ def preprocess(input=''):
     comments_df['normalized_tokens_count'] = comments_df['normalized_tokens'].apply(lambda x: len(x))
 
     # output file path
-    output_path = input[0:-4] + '_processed' + input[-4:]
-    comments_df.to_csv(output_path)
-
-    return f'output filepath: {output_path}'
+    #output_path = input[0:-4] + '_processed' + input[-4:]
+    comments_df.to_csv(output)
+    
+    return comments_df
 
 
 def tokenize_str(str_, nlp=nlp):
@@ -125,3 +112,9 @@ def normalize_tokens(word_list, nlp=nlp, extra_stop_words=[]):
             normalized.append(str(w.lemma_))
 
     return normalized
+
+if __name__ == "__main__":
+    # When running script in Docker Container, save figure to /figures/
+    # directory
+    df = preprocess(input='~/Study/MACSS/macs30200/data/top_100_post_comments_user_flair.txt', output='~/Study/MACSS/macs30200/data/comments_df.csv')
+    #df.head(20)
